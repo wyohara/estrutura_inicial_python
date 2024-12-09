@@ -17,6 +17,9 @@ venv/
 # Ignorar arquivos de log
 *.log
 
+# ignorar arquivos de inicialização com dados criticos
+.ini
+
 # Ignorar diretórios de testes
 tests/__pycache__/
 tests/*.pyc

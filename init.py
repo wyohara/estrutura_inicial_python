@@ -12,11 +12,19 @@ class CriarAmbienteVirtual:
         """Inicializa a classe com o nome do ambiente virtual e o arquivo de requisitos."""
         self.__nome_env = nome_env
         self.__req_txt = requirements_txt
+    
+    def existe_ambiente_virtual(self):
+        """Verifica se o ambiente virtual existe"""
+        if os.path.exists(self.__nome_env): # Verifica se o ambiente virtual já existe
+            return True
+        else:
+            return False
+
 
     def cria_virtualenv(self):
         """Cria um ambiente virtual e instala as dependências especificadas."""
         
-        if os.path.exists(self.__nome_env): # Verifica se o ambiente virtual já existe
+        if self.existe_ambiente_virtual:
             print(f"O ambiente virtual '{self.__nome_env}' já existe.")
         else:
             try:
@@ -29,19 +37,6 @@ class CriarAmbienteVirtual:
         self.__instalar_dependencias()
         self.__exibir_instrucoes_venv()
     
-    def __exibir_instrucoes_venv(self):
-        """Exibe instruções para ativar o ambiente virtual."""
-        if os.name == "nt":  # Windows
-            #comando = f"{os.getcwd()}\\{self.__nome_env}\\Scripts\\activate"
-            comando = f"{self.__nome_env}\\Scripts\\activate"
-            
-        else:  # macOS/Linux
-            comando = f"source {self.__nome_env}/bin/activate"
-        
-        print(f"Para ativar o ambiente virtual, execute: {comando}")
-        print(f"Para acessar o diretório do arquivo: cd {os.getcwd()}")
-        print("Para iniciar o shell: python -m idlelib.idle")
-
     def __instalar_dependencias(self):
         """Instala as dependências especificadas no arquivo requirements.txt."""
 
@@ -66,6 +61,20 @@ class CriarAmbienteVirtual:
         with open(self.__req_txt, 'w') as req:
             subprocess.run(['pip', 'freeze'], stdout=req)
             print(f"Dependências salvas em {self.__req_txt}.")
+
+    def __exibir_instrucoes_venv(self):
+        """Exibe instruções para ativar o ambiente virtual."""
+        if os.name == "nt":  # Windows
+            #comando = f"{os.getcwd()}\\{self.__nome_env}\\Scripts\\activate"
+            comando = f"{self.__nome_env}\\Scripts\\activate"
+            
+        else:  # macOS/Linux
+            comando = f"source {self.__nome_env}/bin/activate"
+        
+        print(f"Para ativar o ambiente virtual, execute: {comando}")
+        print(f"Para acessar o diretório do arquivo: cd {os.getcwd()}")
+        print("Para iniciar o shell: python -m idlelib.idle")
+
 
 
 if __name__ == "__main__":
