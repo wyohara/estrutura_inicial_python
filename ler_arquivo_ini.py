@@ -1,22 +1,20 @@
 import configparser
-"""
-Codo inicial para retorno de um dicionario do arquivo fogi.ini
 
-config= {
-    secao = {chave: valor},
-    secao 2 = {chave: valor},....
-}
+def ler_arquivo_ini(arquivo='config.ini'):
+    """
+    Carrega um arquivo de configuração .ini e converte em um dicionário.
 
-Willian Ohara em 3/11/2024
-"""
+    Parameters:
+    arquivo (String, opcional): arquivo de configuração a ser lido. Padrão é 'config.ini'
 
-def ler_arquivo_ini():
-    """Carrega um arquivo de configuração .ini e converte em um dicionário."""
-    # Cria um objeto ConfigParser
-    config = configparser.ConfigParser()
-
-    # Lê o arquivo de configuração
-    config.read('config.ini')
+    Return:
+    Dict do arquivo config.ini. O padrão é:
+    config= {
+        secao = {chave: valor},
+        secao 2 = {chave: valor},....
+    }
+    """
+    config = configparser.ConfigParser().read(arquivo)
 
     # Converte o resultado para um dicionário
     ini_data = {}
