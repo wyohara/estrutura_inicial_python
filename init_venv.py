@@ -1,57 +1,33 @@
 import os
+import sys
 import venv
 import subprocess
+from importlib.metadata import distributions
+from libs.init_configparser import ConfiguracaoInit
 
 class AmbienteVirtual:
 
     def __init__(self, nome_env="venv", requirements_txt="req.txt", salvar_requirements=True):    
-        """
-        Cria o ambiente virtual e carrega as dependências de um txt de requerimentos
-
-        Parameters:
-        nome_env (string, opcional): o nome do ambiente virtual. O padrão é 'venv'
-        requirements_txt (string, opcional): o nome do arquivo de requerimentos do pip a ser usado. O padrão é 'req.txt'
-
-        Methods:
-        ambiente_existe: Verifica se já existe um ambiente virtual.
-        cria_ambiente_virtual: Cria o ambiente virtual.
-        salvar_requirements: Salva o  requeriments do arquivo pip
-        exibir_instrucoes: Exibe as instruções sobre o uso do ambiente virtual
-        """
         self.nome_env = nome_env
         self.requirements_txt = requirements_txt
+        self.initFile = ConfiguracaoInit()
 
         if salvar_requirements: self.salvar_requirements()
 
-    def ambiente_existe(self):
-        """
-        Verifica se o ambiente virtual já existe.
-
-        Return: 
-        Boolean: True se existir um ambiente virtual e False se não existir.
-
-        """
-        return os.path.exists(self.nome_env)
+    def ambiente_existe(self): return os.path.exists(self.nome_env)
 
     def cria_ambiente_virtual(self, instrucoes=True):
-        """
-        Cria um ambiente virtual e instala as dependências especificadas.
 
-        Parameters:
-        instrucoes (boolean, opcional): caso True mostra a instrução. Padrão é True
-        """
-        if self.ambiente_existe():
+        if int(self.initFile.dados['AMBIENTE_VIRTUAL']['venv_criado'])==1:
             print(f"O ambiente virtual '{self.nome_env}' já existe.")
         else:
             self._criar_ambiente()
+            self.initFile.set_valor('AMBIENTE_VIRTUAL','venv_criado',1)
         
         self._instalar_dependencias()
         if instrucoes: self.exibir_instrucoes()
 
     def salvar_requirements(self):
-        """
-        Executa o comando pip freeze e salva as dependências no arquivo requirements.txt.
-        """
         with open(self.requirements_txt, 'w') as req_file:
             subprocess.run(['pip', 'freeze'], stdout=req_file)
             print(f"Dependências salvas em '{self.requirements_txt}'.")
@@ -107,6 +83,23 @@ class AmbienteVirtual:
         elif os.name == "posix":  # macOS/Linux
             return f"source {self.nome_env}/bin/activate"
         return ""
+    
+    def is_venv_ativo():
+        # Verifica para Python moderno (3.3+) e antigo
+        in_venv = (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix) or (
+            hasattr(sys, 'real_prefix'))
+        
+        if in_venv:
+            print ({
+                'active': True,
+                'path': os.environ.get('VIRTUAL_ENV', sys.prefix),
+                'base_python': sys.base_prefix,
+                'current_python': sys.prefix
+            })
+            return True
+        return False
+            
+
 
 if __name__ == "__main__":
     ambiente = AmbienteVirtual()
