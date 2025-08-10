@@ -4,7 +4,7 @@ import subprocess
 
 class AmbienteVirtual:
 
-    def __init__(self, nome_env="venv", requirements_txt="req.txt"):    
+    def __init__(self, nome_env="venv", requirements_txt="req.txt", salvar_requirements=True):    
         """
         Cria o ambiente virtual e carrega as dependências de um txt de requerimentos
 
@@ -20,6 +20,8 @@ class AmbienteVirtual:
         """
         self.nome_env = nome_env
         self.requirements_txt = requirements_txt
+
+        if salvar_requirements: self.salvar_requirements()
 
     def ambiente_existe(self):
         """
